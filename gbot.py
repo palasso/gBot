@@ -5,7 +5,7 @@ import string
 from lxml import html
 import requests
 import json
-import urllib.request
+from urllib import request
 from html import unescape
 import re
 
@@ -116,7 +116,7 @@ class commands:
             url += "?firstName=" + msg[0] + "&lastName="
         if(len(msg) > 1):
             url += msg[1]
-        req = urllib.request.urlopen(url)
+        req = request.urlopen(url)
         resp = req.read()
         joke = json.loads(resp.decode('utf8'))
         say(unescape(joke['value']['joke']).replace("  ", " "))
@@ -134,7 +134,7 @@ class commands:
         cur = 'USD'
         msg = info['msg'].split()
         url = "https://api.bitcoinaverage.com/ticker/global/all"
-        req = urllib.request.urlopen(url)
+        req = request.urlopen(url)
         resp = req.read()
         data = json.loads(resp.decode('utf8'))
         if(len(msg) > 0):
@@ -152,7 +152,7 @@ class commands:
     def eightball(info,usrs):
         msg = info['msg'][len(info['botcmd']):]
         url = "http://8ball.delegator.com/magic/JSON/"
-        req = urllib.request.urlopen(url + msg)
+        req = request.urlopen(url + msg)
         resp = req.read()
         data = json.loads(resp.decode('utf8'))
         say(data['magic']['answer'])
