@@ -32,7 +32,7 @@ headers = {
 readbuffer = ""
 
 
-s=socket.socket( )
+s=socket.socket()
 s.connect((HOST, PORT))
 
 s.send(bytes("NICK %s\r\n" % NICK, "UTF-8"))
@@ -47,10 +47,10 @@ def joinch(line):
 
 def getcmd(line):
     botcmd = ""
-    if (len(line) > 3):
-        if (line[3][:2] == ":!"):
+    if(len(line) > 3):
+        if(line[3][:2] == ":!"):
             botcmd = line[3][1:]
-    return (botcmd)
+    return(botcmd)
 
 def getusr(line):
     sender = ""
@@ -59,7 +59,7 @@ def getusr(line):
             break
         if(char != ":"):
             sender += char
-    return (sender)
+    return(sender)
 
 def getmsg(line):
     size = len(line)
@@ -101,7 +101,7 @@ class commands:
     def smug(info,usrs):
         msg = info['msg'].replace(" ","")
         s = "Fuck you, "
-        if ((msg not in usrs) or (("gamah" in str.lower(info['msg'])) or (str.lower(NICK) in str.lower(info['msg'])) or(info['msg'].isspace()))):
+        if((msg not in usrs) or (("gamah" in str.lower(info['msg'])) or (str.lower(NICK) in str.lower(info['msg'])) or(info['msg'].isspace()))):
             s += info['user']
         else:
             s += msg
@@ -183,7 +183,7 @@ class commands:
             'botcmd' : getcmd(line)
         }
         #handle userlist here... WIP.
-        if (out['cmd'] == "353"):
+        if(out['cmd'] == "353"):
 			#this is terrible... find a better way later
             newusrs = line[5:]
             newusrs = ' '.join(newusrs).replace('@','').split()
@@ -196,11 +196,11 @@ class commands:
         if(out['cmd'] == "NICK"):
             self.usrlist[out['channel'][1:]] = self.usrlist[out['user']]
             del self.usrlist[out['user']]
-        if (out['cmd'] == "PART" or out['cmd'] == "QUIT"):
+        if(out['cmd'] == "PART" or out['cmd'] == "QUIT"):
             del self.usrlist[out['user']]
-        if (out['cmd'] == "JOIN" and out['user'] != NICK):
+        if(out['cmd'] == "JOIN" and out['user'] != NICK):
             self.usrlist[out['user']] = ""
-        if (out['cmd'] == "KICK"):
+        if(out['cmd'] == "KICK"):
             del self.usrlist[line[3]]
         #run commands
         try:
@@ -221,7 +221,7 @@ bot = commands()
 while 1:
     readbuffer = readbuffer+s.recv(1024).decode("UTF-8",'ignore')
     temp = str.split(readbuffer, "\n")
-    readbuffer=temp.pop( )
+    readbuffer=temp.pop()
     for line in temp:
         line = str.rstrip(line)
         #print(line)
@@ -234,15 +234,15 @@ while 1:
         #housekeeping done, be a bot
         else:
             x = bot.parse(line)
-            print (x)
+            print(x)
             #print(bot.usrlist)
 
             # check if the message in a channel contains a protocol or or www.
-            if (x['cmd'] == 'PRIVMSG' and x['channel'] == CHANNEL):
+            if(x['cmd'] == 'PRIVMSG' and x['channel'] == CHANNEL):
                 if( x['msg'].find("http") != -1 or x['msg'].find("www.") != -1):
                     msgArray = x['msg'].split(" ")
                     for l in msgArray:
-                        if (isURL(l)):
+                        if(isURL(l)):
                             # check if the link has a protocol if not add http
                             if not l.lower().startswith("http"):
                                 l = 'http://' + l
