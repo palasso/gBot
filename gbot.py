@@ -108,7 +108,7 @@ class commands:
         s += "! :]"
         say(s)
     def swag(info,usrs):
-       say("out of ten!")
+        say("out of ten!")
     def norris(info,usrs):
         msg = info['msg'].split()
         url = "http://api.icndb.com/jokes/random"
