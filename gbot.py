@@ -177,7 +177,7 @@ class commands:
 		#info returned to main loop for further processing
         out = {
             'user' : getusr(line[0]),
-	        'cmd' : line[1],
+            'cmd' : line[1],
             'channel' :line[2],
             'msg' : getmsg(line)[len(getcmd(line)):],
             'botcmd' : getcmd(line)
