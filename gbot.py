@@ -3,7 +3,6 @@
 import socket
 import string
 from lxml import html
-import requests
 import json
 from urllib import request
 from html import unescape
@@ -77,9 +76,9 @@ def say(msg):
 # get the title from a link and send it to the channel
 def getTitle(link):
     try:
-        page = requests.get(link, headers=headers, timeout=5)
-        page.encoding = 'UTF-8'
-        tree = html.fromstring(page.text)
+        req = request.urlopen(link, timeout=5)
+        resp = req.read()
+        tree = html.fromstring(resp)
         title = tree.xpath('//title/text()')
         say("^ " + title[0].strip())
     except Exception:
@@ -157,8 +156,9 @@ class commands:
         data = json.loads(resp.decode('utf8'))
         say(data['magic']['answer'])
     def wisdom(info,usrs):
-        page = requests.get('http://wisdomofchopra.com/iframe.php')
-        tree = html.fromstring(page.content)
+        req = request.urlopen('http://wisdomofchopra.com/iframe.php')
+        resp = req.read()
+        tree = html.fromstring(resp)
         quote = tree.xpath('//table//td[@id="quote"]//header//h2/text()')
         say(quote[0][1:-3])
     cmdlist ={
