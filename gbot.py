@@ -174,7 +174,7 @@ class commands:
     }
 
     def parse(self,line):
-    	#info returned to main loop for further processing
+        #info returned to main loop for further processing
         out = {
             'user' : getusr(line[0]),
             'cmd' : line[1],
@@ -183,7 +183,7 @@ class commands:
             'botcmd' : getcmd(line)
         }
         #handle userlist here... WIP.
-        if(out['cmd'] == "353")
+        if(out['cmd'] == "353"):
             #this is terrible... find a better way later
             newusrs = line[5:]
             newusrs = ' '.join(newusrs).replace('@','').split()
