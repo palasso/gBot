@@ -129,7 +129,6 @@ class commands:
         say("I reckon there are " + str(len(users)) + " users!")
         print(users)
     def btc(info, usrs):
-        money = 0
         cur = 'USD'
         msg = info['msg'].split()
         url = "https://api.bitcoinaverage.com/ticker/global/all"
