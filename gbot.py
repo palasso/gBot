@@ -106,20 +106,20 @@ def isURL(string):
 class commands:
     usrlist = {}
 
-    def smug(info, usrs):
+    def smug(info, users):
         msg = info['msg'].replace(" ", "")
         s = "Fuck you, "
-        if (msg not in usrs) or (("gamah" in str.lower(info['msg'])) or (str.lower(NICK) in str.lower(info['msg'])) or(info['msg'].isspace())):
+        if (msg not in users) or (("gamah" in str.lower(info['msg'])) or (str.lower(NICK) in str.lower(info['msg'])) or(info['msg'].isspace())):
             s += info['user']
         else:
             s += msg
         s += "! :]"
         say(s)
 
-    def swag(info, usrs):
+    def swag(info, users):
         say("out of ten!")
 
-    def norris(info, usrs):
+    def norris(info, users):
         msg = info['msg'].split()
         url = "http://api.icndb.com/jokes/random"
         if len(msg) > 0:
@@ -131,9 +131,9 @@ class commands:
         joke = json.loads(resp.decode('utf8'))
         say(unescape(joke['value']['joke']).replace("  ", " "))
 
-    def bacon(info, usrs):
+    def bacon(info, users):
         msg = info['msg'].replace(" ", "")
-        if msg in usrs:
+        if msg in users:
             say("\001ACTION gives " + msg + " a delicious strip of bacon as a gift from " + info['user'] + "! \001")
         else:
             say("\001ACTION gives " + info['user'] + " a delicious strip of bacon.  \001")
@@ -142,7 +142,7 @@ class commands:
         say("I reckon there are " + str(len(users)) + " users!")
         print(users)
 
-    def btc(info, usrs):
+    def btc(info, users):
         cur = 'USD'
         msg = info['msg'].split()
         url = "https://api.bitcoinaverage.com/ticker/global/all"
@@ -154,16 +154,16 @@ class commands:
                 cur = msg[0]
         say(info['user'] + ": 1 BTC = " + str(data[cur]['ask']) + " " + cur)
 
-    def lenny(info, usrs):
+    def lenny(info, users):
         usr = ""
         msg = info['msg'].split()
-        if len(msg) > 0 and msg[0] in usrs:
+        if len(msg) > 0 and msg[0] in users:
             usr = msg[0]
         else:
             usr = info['user']
         say(usr + ": ( ͡° ͜ʖ ͡°)")
 
-    def eightball(info, usrs):
+    def eightball(info, users):
         msg = info['msg'][len(info['botcmd']):]
         url = "http://8ball.delegator.com/magic/JSON/"
         req = request.urlopen(url + msg)
@@ -171,7 +171,7 @@ class commands:
         data = json.loads(resp.decode('utf8'))
         say(data['magic']['answer'])
 
-    def wisdom(info, usrs):
+    def wisdom(info, users):
         req = request.urlopen('http://wisdomofchopra.com/iframe.php')
         resp = req.read()
         tree = html.fromstring(resp)
