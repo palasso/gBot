@@ -39,32 +39,32 @@ s.send(bytes("USER %s %s bla :%s\r\n" % (IDENT, HOST, REALNAME), "UTF-8"))
 
 def joinch(line):
     global CONNECTED
-    if(line[1] == "005"):
+    if line[1] == "005":
         print("Connected! Joining channel")
         s.send(bytes("JOIN %s %s \r\n" % (CHANNEL,KEY), "UTF-8"));
         CONNECTED = 1
 
 def getcmd(line):
     botcmd = ""
-    if(len(line) > 3):
-        if(line[3][:2] == ":!"):
+    if len(line) > 3:
+        if line[3][:2] == ":!":
             botcmd = line[3][1:]
-    return(botcmd)
+    return botcmd
 
 def getusr(line):
     sender = ""
     for char in line:
-        if(char == "!"):
+        if char == "!":
             break
-        if(char != ":"):
+        if char != ":":
             sender += char
-    return(sender)
+    return sender
 
 def getmsg(line):
     size = len(line)
     i = 3
     message = ""
-    while(i < size):
+    while i < size:
         message += line[i] + " "
         i = i + 1
     message.lstrip(":")
@@ -100,7 +100,7 @@ class commands:
     def smug(info,usrs):
         msg = info['msg'].replace(" ","")
         s = "Fuck you, "
-        if((msg not in usrs) or (("gamah" in str.lower(info['msg'])) or (str.lower(NICK) in str.lower(info['msg'])) or(info['msg'].isspace()))):
+        if (msg not in usrs) or (("gamah" in str.lower(info['msg'])) or (str.lower(NICK) in str.lower(info['msg'])) or(info['msg'].isspace())):
             s += info['user']
         else:
             s += msg
@@ -111,9 +111,9 @@ class commands:
     def norris(info,usrs):
         msg = info['msg'].split()
         url = "http://api.icndb.com/jokes/random"
-        if(len(msg) > 0):
+        if len(msg) > 0:
             url += "?firstName=" + msg[0] + "&lastName="
-        if(len(msg) > 1):
+        if len(msg) > 1:
             url += msg[1]
         req = request.urlopen(url)
         resp = req.read()
@@ -121,7 +121,7 @@ class commands:
         say(unescape(joke['value']['joke']).replace("  ", " "))
     def bacon(info,usrs):
         msg = info['msg'].replace(" ","")
-        if(msg in usrs):
+        if msg in usrs:
             say("\001ACTION gives " + msg + " a delicious strip of bacon as a gift from " + info['user'] + "! \001")
         else:
             say("\001ACTION gives " + info['user'] + " a delicious strip of bacon.  \001")
@@ -136,14 +136,14 @@ class commands:
         req = request.urlopen(url)
         resp = req.read()
         data = json.loads(resp.decode('utf8'))
-        if(len(msg) > 0):
-            if(msg[0] in data):
+        if len(msg) > 0:
+            if msg[0] in data:
                 cur = msg[0]
         say(info['user'] + ": 1 BTC = " + str(data[cur]['ask']) + " " + cur)
     def lenny(info,usrs):
         usr = ""
         msg = info['msg'].split()
-        if(len(msg) > 0 and msg[0] in usrs):
+        if len(msg) > 0 and msg[0] in usrs:
             usr = msg[0]
         else:
             usr = info['user']
@@ -183,7 +183,7 @@ class commands:
             'botcmd' : getcmd(line)
         }
         #handle userlist here... WIP.
-        if(out['cmd'] == "353"):
+        if out['cmd'] == "353":
             #this is terrible... find a better way later
             newusrs = line[5:]
             newusrs = ' '.join(newusrs).replace('@','').split()
@@ -193,29 +193,29 @@ class commands:
             newusrs = ' '.join(newusrs).replace('~','').split()
             for usr in newusrs:
                 self.usrlist[usr] = ""
-        if(out['cmd'] == "NICK"):
+        if out['cmd'] == "NICK":
             self.usrlist[out['channel'][1:]] = self.usrlist[out['user']]
             del self.usrlist[out['user']]
-        if(out['cmd'] == "PART" or out['cmd'] == "QUIT"):
+        if out['cmd'] == "PART" or out['cmd'] == "QUIT":
             del self.usrlist[out['user']]
-        if(out['cmd'] == "JOIN" and out['user'] != NICK):
+        if out['cmd'] == "JOIN" and out['user'] != NICK:
             self.usrlist[out['user']] = ""
-        if(out['cmd'] == "KICK"):
+        if out['cmd'] == "KICK":
             del self.usrlist[line[3]]
         #run commands
         try:
-            if(out['channel'] == CHANNEL):
-                if(out['botcmd'][1:] in self.usrlist.keys()):
-                    if(out['botcmd'][1:] == out['user']):
+            if out['channel'] == CHANNEL:
+                if out['botcmd'][1:] in self.usrlist.keys():
+                    if out['botcmd'][1:] == out['user']:
                         self.usrlist[out['user']] = out['msg']
                     else:
-                        if(not self.usrlist[out['botcmd'][1:]].isspace()):
+                        if not self.usrlist[out['botcmd'][1:]].isspace():
                             say(self.usrlist[out['botcmd'][1:]])
                 else:
                     self.cmdlist[out['botcmd']](out,self.usrlist)
         except Exception as FUCK:
             print(FUCK)
-        return(out)
+        return out
 
 bot = commands()
 while 1:
@@ -227,9 +227,9 @@ while 1:
         #print(line)
         line = str.split(line)
         #must respond to pings to receive new messages
-        if(line[0] == "PING"):
+        if line[0] == "PING":
             s.send(bytes("PONG %s\r\n" % line[1], "UTF-8"))
-        elif(CONNECTED == 0):
+        elif CONNECTED == 0:
             joinch(line)
         #housekeeping done, be a bot
         else:
@@ -238,11 +238,11 @@ while 1:
             #print(bot.usrlist)
 
             # check if the message in a channel contains a protocol or or www.
-            if(x['cmd'] == 'PRIVMSG' and x['channel'] == CHANNEL):
-                if( x['msg'].find("http") != -1 or x['msg'].find("www.") != -1):
+            if x['cmd'] == 'PRIVMSG' and x['channel'] == CHANNEL:
+                if x['msg'].find("http") != -1 or x['msg'].find("www.") != -1:
                     msgArray = x['msg'].split(" ")
                     for l in msgArray:
-                        if(isURL(l)):
+                        if isURL(l):
                             # check if the link has a protocol if not add http
                             if not l.lower().startswith("http"):
                                 l = 'http://' + l
