@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-import socket
-import string
-from lxml import html
 import json
-from urllib import request
-from html import unescape
 import re
+import socket
+from html import unescape
+from urllib import request
+
+from lxml import html
 
 import cfg
 
