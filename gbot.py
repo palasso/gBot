@@ -37,6 +37,7 @@ s.connect((HOST, PORT))
 s.send(bytes("NICK %s\r\n" % NICK, "UTF-8"))
 s.send(bytes("USER %s %s bla :%s\r\n" % (IDENT, HOST, REALNAME), "UTF-8"))
 
+
 def joinch(line):
     global CONNECTED
     if line[1] == "005":
@@ -44,12 +45,14 @@ def joinch(line):
         s.send(bytes("JOIN %s %s \r\n" % (CHANNEL, KEY), "UTF-8"))
         CONNECTED = 1
 
+
 def getcmd(line):
     botcmd = ""
     if len(line) > 3:
         if line[3][:2] == ":!":
             botcmd = line[3][1:]
     return botcmd
+
 
 def getusr(line):
     sender = ""
@@ -60,6 +63,7 @@ def getusr(line):
             sender += char
     return sender
 
+
 def getmsg(line):
     size = len(line)
     i = 3
@@ -69,9 +73,12 @@ def getmsg(line):
         i = i + 1
     message.lstrip(":")
     return message[1:]
+
+
 def say(msg):
     s.send(bytes("PRIVMSG %s :%s\r\n" % (CHANNEL, msg), "UTF-8"))
     return True
+
 
 # get the title from a link and send it to the channel
 def getTitle(link):
@@ -83,6 +90,7 @@ def getTitle(link):
         say("^ " + title[0].strip())
     except Exception:
         print("Bad url in message: ", link)
+
 
 # checks if given string is a url
 # it must start with either http(s):// and/or www. and contain only
@@ -97,8 +105,9 @@ def isURL(string):
 
 class commands:
     usrlist = {}
+
     def smug(info, usrs):
-        msg = info['msg'].replace(" ","")
+        msg = info['msg'].replace(" ", "")
         s = "Fuck you, "
         if (msg not in usrs) or (("gamah" in str.lower(info['msg'])) or (str.lower(NICK) in str.lower(info['msg'])) or(info['msg'].isspace())):
             s += info['user']
@@ -106,8 +115,10 @@ class commands:
             s += msg
         s += "! :]"
         say(s)
+
     def swag(info, usrs):
         say("out of ten!")
+
     def norris(info, usrs):
         msg = info['msg'].split()
         url = "http://api.icndb.com/jokes/random"
@@ -119,15 +130,18 @@ class commands:
         resp = req.read()
         joke = json.loads(resp.decode('utf8'))
         say(unescape(joke['value']['joke']).replace("  ", " "))
+
     def bacon(info, usrs):
-        msg = info['msg'].replace(" ","")
+        msg = info['msg'].replace(" ", "")
         if msg in usrs:
             say("\001ACTION gives " + msg + " a delicious strip of bacon as a gift from " + info['user'] + "! \001")
         else:
             say("\001ACTION gives " + info['user'] + " a delicious strip of bacon.  \001")
+
     def listusr(info, users):
         say("I reckon there are " + str(len(users)) + " users!")
         print(users)
+
     def btc(info, usrs):
         cur = 'USD'
         msg = info['msg'].split()
@@ -139,6 +153,7 @@ class commands:
             if msg[0] in data:
                 cur = msg[0]
         say(info['user'] + ": 1 BTC = " + str(data[cur]['ask']) + " " + cur)
+
     def lenny(info, usrs):
         usr = ""
         msg = info['msg'].split()
@@ -147,6 +162,7 @@ class commands:
         else:
             usr = info['user']
         say(usr + ": ( ͡° ͜ʖ ͡°)")
+
     def eightball(info, usrs):
         msg = info['msg'][len(info['botcmd']):]
         url = "http://8ball.delegator.com/magic/JSON/"
@@ -154,6 +170,7 @@ class commands:
         resp = req.read()
         data = json.loads(resp.decode('utf8'))
         say(data['magic']['answer'])
+
     def wisdom(info, usrs):
         req = request.urlopen('http://wisdomofchopra.com/iframe.php')
         resp = req.read()
