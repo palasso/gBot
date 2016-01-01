@@ -70,7 +70,7 @@ def getmsg(line):
     message = ""
     while i < size:
         message += line[i] + " "
-        i = i + 1
+        i += 1
     message.lstrip(":")
     return message[1:]
 
