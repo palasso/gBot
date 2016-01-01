@@ -31,7 +31,7 @@ headers = {
 readbuffer = ""
 
 
-s=socket.socket()
+s = socket.socket()
 s.connect((HOST, PORT))
 
 s.send(bytes("NICK %s\r\n" % NICK, "UTF-8"))
@@ -41,7 +41,7 @@ def joinch(line):
     global CONNECTED
     if line[1] == "005":
         print("Connected! Joining channel")
-        s.send(bytes("JOIN %s %s \r\n" % (CHANNEL,KEY), "UTF-8"));
+        s.send(bytes("JOIN %s %s \r\n" % (CHANNEL, KEY), "UTF-8"))
         CONNECTED = 1
 
 def getcmd(line):
@@ -97,7 +97,7 @@ def isURL(string):
 
 class commands:
     usrlist = {}
-    def smug(info,usrs):
+    def smug(info, usrs):
         msg = info['msg'].replace(" ","")
         s = "Fuck you, "
         if (msg not in usrs) or (("gamah" in str.lower(info['msg'])) or (str.lower(NICK) in str.lower(info['msg'])) or(info['msg'].isspace())):
@@ -106,9 +106,9 @@ class commands:
             s += msg
         s += "! :]"
         say(s)
-    def swag(info,usrs):
+    def swag(info, usrs):
         say("out of ten!")
-    def norris(info,usrs):
+    def norris(info, usrs):
         msg = info['msg'].split()
         url = "http://api.icndb.com/jokes/random"
         if len(msg) > 0:
@@ -119,16 +119,16 @@ class commands:
         resp = req.read()
         joke = json.loads(resp.decode('utf8'))
         say(unescape(joke['value']['joke']).replace("  ", " "))
-    def bacon(info,usrs):
+    def bacon(info, usrs):
         msg = info['msg'].replace(" ","")
         if msg in usrs:
             say("\001ACTION gives " + msg + " a delicious strip of bacon as a gift from " + info['user'] + "! \001")
         else:
             say("\001ACTION gives " + info['user'] + " a delicious strip of bacon.  \001")
-    def listusr(info,users):
+    def listusr(info, users):
         say("I reckon there are " + str(len(users)) + " users!")
         print(users)
-    def btc(info,usrs):
+    def btc(info, usrs):
         money = 0
         cur = 'USD'
         msg = info['msg'].split()
@@ -140,57 +140,57 @@ class commands:
             if msg[0] in data:
                 cur = msg[0]
         say(info['user'] + ": 1 BTC = " + str(data[cur]['ask']) + " " + cur)
-    def lenny(info,usrs):
+    def lenny(info, usrs):
         usr = ""
         msg = info['msg'].split()
         if len(msg) > 0 and msg[0] in usrs:
             usr = msg[0]
         else:
             usr = info['user']
-        say( usr + ": ( ͡° ͜ʖ ͡°)")
-    def eightball(info,usrs):
+        say(usr + ": ( ͡° ͜ʖ ͡°)")
+    def eightball(info, usrs):
         msg = info['msg'][len(info['botcmd']):]
         url = "http://8ball.delegator.com/magic/JSON/"
         req = request.urlopen(url + msg)
         resp = req.read()
         data = json.loads(resp.decode('utf8'))
         say(data['magic']['answer'])
-    def wisdom(info,usrs):
+    def wisdom(info, usrs):
         req = request.urlopen('http://wisdomofchopra.com/iframe.php')
         resp = req.read()
         tree = html.fromstring(resp)
         quote = tree.xpath('//table//td[@id="quote"]//header//h2/text()')
         say(quote[0][1:-3])
-    cmdlist ={
-        "!smug" : smug,
-        "!swag" : swag,
-        "!cn" : norris,
-        "!bacon" : bacon,
-        "!users" : listusr,
-        "!btc" : btc,
-        "!lenny" : lenny,
-        "!8ball" : eightball,
-        "!wisdom" : wisdom
+    cmdlist = {
+        "!smug": smug,
+        "!swag": swag,
+        "!cn": norris,
+        "!bacon": bacon,
+        "!users": listusr,
+        "!btc": btc,
+        "!lenny": lenny,
+        "!8ball": eightball,
+        "!wisdom": wisdom
     }
 
-    def parse(self,line):
-        #info returned to main loop for further processing
+    def parse(self, line):
+        # info returned to main loop for further processing
         out = {
-            'user' : getusr(line[0]),
-            'cmd' : line[1],
-            'channel' :line[2],
-            'msg' : getmsg(line)[len(getcmd(line)):],
-            'botcmd' : getcmd(line)
+            'user': getusr(line[0]),
+            'cmd': line[1],
+            'channel': line[2],
+            'msg': getmsg(line)[len(getcmd(line)):],
+            'botcmd': getcmd(line)
         }
-        #handle userlist here... WIP.
+        # handle userlist here... WIP.
         if out['cmd'] == "353":
-            #this is terrible... find a better way later
+            # this is terrible... find a better way later
             newusrs = line[5:]
-            newusrs = ' '.join(newusrs).replace('@','').split()
-            newusrs = ' '.join(newusrs).replace('%','').split()
-            newusrs = ' '.join(newusrs).replace('+','').split()
-            newusrs = ' '.join(newusrs).replace(':','').split()
-            newusrs = ' '.join(newusrs).replace('~','').split()
+            newusrs = ' '.join(newusrs).replace('@', '').split()
+            newusrs = ' '.join(newusrs).replace('%', '').split()
+            newusrs = ' '.join(newusrs).replace('+', '').split()
+            newusrs = ' '.join(newusrs).replace(':', '').split()
+            newusrs = ' '.join(newusrs).replace('~', '').split()
             for usr in newusrs:
                 self.usrlist[usr] = ""
         if out['cmd'] == "NICK":
@@ -202,7 +202,7 @@ class commands:
             self.usrlist[out['user']] = ""
         if out['cmd'] == "KICK":
             del self.usrlist[line[3]]
-        #run commands
+        # run commands
         try:
             if out['channel'] == CHANNEL:
                 if out['botcmd'][1:] in self.usrlist.keys():
@@ -212,30 +212,30 @@ class commands:
                         if not self.usrlist[out['botcmd'][1:]].isspace():
                             say(self.usrlist[out['botcmd'][1:]])
                 else:
-                    self.cmdlist[out['botcmd']](out,self.usrlist)
+                    self.cmdlist[out['botcmd']](out, self.usrlist)
         except Exception as FUCK:
             print(FUCK)
         return out
 
 bot = commands()
 while 1:
-    readbuffer = readbuffer+s.recv(1024).decode("UTF-8",'ignore')
+    readbuffer = readbuffer+s.recv(1024).decode("UTF-8", 'ignore')
     temp = str.split(readbuffer, "\n")
-    readbuffer=temp.pop()
+    readbuffer = temp.pop()
     for line in temp:
         line = str.rstrip(line)
-        #print(line)
+        # print(line)
         line = str.split(line)
-        #must respond to pings to receive new messages
+        # must respond to pings to receive new messages
         if line[0] == "PING":
             s.send(bytes("PONG %s\r\n" % line[1], "UTF-8"))
         elif CONNECTED == 0:
             joinch(line)
-        #housekeeping done, be a bot
+        # housekeeping done, be a bot
         else:
             x = bot.parse(line)
             print(x)
-            #print(bot.usrlist)
+            # print(bot.usrlist)
 
             # check if the message in a channel contains a protocol or or www.
             if x['cmd'] == 'PRIVMSG' and x['channel'] == CHANNEL:
